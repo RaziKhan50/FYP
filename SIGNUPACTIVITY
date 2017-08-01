@@ -1,0 +1,83 @@
+private void CmbtnLogin_Click(object sender, EventArgs e)
+        {
+           
+            try
+            {
+                if (string.IsNullOrEmpty(this.txtUn.Text))
+                {
+                    MessageBox.Show("Enter User Name","Enter User Name");
+                    txtUn.Focus();
+                }
+                else if (string.IsNullOrEmpty(this.txtPw.Text))
+                {
+                    MessageBox.Show("Enter Password","Enter Passwrod");
+                    txtPw.Focus();
+                }
+                else if (CboUnits.SelectedIndex <= -1)
+                {
+                    MessageBox.Show("Select Unit","Select Unit");
+                    CboUnits.Focus();
+                }
+                else if (string.IsNullOrEmpty(this.txtUn.Text) | string.IsNullOrEmpty(this.txtPw.Text) | string.IsNullOrEmpty(CboUnits.Text))
+                {
+                    MessageBox.Show("Provide User Name and Password");
+                }
+                else
+                {
+                   
+                    sq = "Select UN,PW,Units from Login";
+                    Cmd = new System.Data.SqlClient.SqlCommand(sq,Con);
+                    Dr = Cmd.ExecuteReader();
+                    if (Dr.Read())
+                    {
+                        string Uname = txtUn.Text;
+                        string PWord = txtPw.Text;
+                        string type = CboUnits.Text;
+ 
+                        if (Dr["UN"].ToString() == Uname && Dr["PW"].ToString() == PWord && Dr["Units"].ToString()==type )
+                        {
+                            /*frmFind fnd = new frmFind();
+                            fnd.Show();*/
+                            MDIParent1 mdi = new MDIParent1();
+                            mdi.Show();
+                            frmRawmat INV = new frmRawmat();
+                            
+                            
+                        }
+ 
+                        else
+                       
+                        {
+                            if (Dr["UN"].ToString() != Uname)
+                            {
+                                MessageBox.Show("Invalid User Name","Invalid User Name");
+                                txtUn.Clear();
+                                txtUn.Focus();
+                            }
+                            else if (Dr["PW"].ToString() != PWord)
+                            {
+                                MessageBox.Show("Invalid Password","Invalid Password");
+                                txtPw.Clear();
+                                txtPw.Focus();
+                             }
+                             else if (Dr["Units"].ToString() != type)
+                             {
+                                 MessageBox.Show("invalid Unit","Invalid Unit");
+                                 CboUnits.SelectedIndex = -1;
+                                 CboUnits.Text = ("[Select]");
+                                 CboUnits.Focus();
+                             }
+ 
+                            }
+                         }
+                    
+                    Dr.Close();
+                    Cmd.Dispose();
+                          }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+                         
+        }
